@@ -1,0 +1,35 @@
+{
+  "name": "deta-space-cli",
+  "version": "0.0.1",
+  "description": "",
+  "bin": {
+    "space": "index.js"
+  },
+  "scripts": {
+    "postinstall": "node install.js",
+    "lint": "eslint . && npx prettier --check .",
+    "lint:fix": "eslint --fix . && npx prettier --check --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lete114/deta-space-cli.git"
+  },
+  "keywords": [
+    "deta",
+    "space",
+    "cli"
+  ],
+  "author": "Lete <me@imlete.cn> (https://www.imlete.cn)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Lete114/deta-space-cli/issues"
+  },
+  "homepage": "https://github.com/Lete114/deta-space-cli#readme",
+  "dependencies": {
+    "unzipper": "^0.10.11"
+  },
+  "devDependencies": {
+    "eslint": "^8.35.0",
+    "prettier": "^2.8.4"
+  }
+}

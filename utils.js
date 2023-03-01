@@ -1,8 +1,8 @@
 const http = require('http')
 const https = require('https')
-const { createReadStream, writeFileSync, existsSync, rmSync } = require('fs')
+const { writeFileSync, existsSync, rmSync } = require('fs')
 const { join } = require('path')
-const { Extract } = require('unzipper')
+const { spawn } = require('child_process')
 
 const isWindows = process.platform === 'win32'
 
@@ -48,11 +48,27 @@ async function download(url, filePath) {
   writeFileSync(filePath, buffer)
 }
 
-function unzip(zipPath, targetPath) {
+function unzip(zipFile, destDir) {
   return new Promise((resolve, reject) => {
-    const stream = createReadStream(zipPath).pipe(Extract({ path: targetPath }))
-    stream.on('close', resolve)
-    stream.on('error', reject)
+    let command, args
+    if (process.platform === 'win32') {
+      command = 'powershell.exe'
+      args = ['-noprofile', '-command', `Expand-Archive "${zipFile}" -DestinationPath "${destDir}"`]
+    } else {
+      command = 'unzip'
+      args = ['-o', '-q', '-d', destDir, zipFile]
+    }
+    const childProcess = spawn(command, args)
+    childProcess.on('error', (err) => {
+      reject(err)
+    })
+    childProcess.on('exit', (code, signal) => {
+      if (code === 0) {
+        resolve()
+      } else {
+        reject(new Error(`Exit code: ${code}, signal: ${signal}`))
+      }
+    })
   })
 }
 

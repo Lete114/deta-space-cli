@@ -25,9 +25,6 @@
     "url": "https://github.com/Lete114/deta-space-cli/issues"
   },
   "homepage": "https://github.com/Lete114/deta-space-cli#readme",
-  "dependencies": {
-    "unzipper": "^0.10.11"
-  },
   "devDependencies": {
     "eslint": "^8.35.0",
     "prettier": "^2.8.4"

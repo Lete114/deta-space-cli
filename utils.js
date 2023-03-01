@@ -4,6 +4,8 @@ const { createReadStream, writeFileSync, existsSync, rmSync } = require('fs')
 const { join } = require('path')
 const { Extract } = require('unzipper')
 
+const isWindows = process.platform === 'win32'
+
 /**
  * download file
  * @param {string} url
@@ -66,6 +68,6 @@ function remove(path) {
 const spaceBasePath = join(process.env.HOME || process.env.USERPROFILE, '.detaspace')
 const spaceBinaryDirPath = join(spaceBasePath, 'bin')
 const spacePath = join(spaceBinaryDirPath, 'space')
-const spaceBinaryPath = spacePath + (process.platform === 'win32' ? '.exe' : '')
+const spaceBinaryPath = spacePath + (isWindows ? '.exe' : '')
 
-module.exports = { request, download, unzip, installFailed, remove, spaceBasePath, spaceBinaryDirPath, spacePath, spaceBinaryPath }
+module.exports = { isWindows, request, download, unzip, installFailed, remove, spaceBasePath, spaceBinaryDirPath, spacePath, spaceBinaryPath }

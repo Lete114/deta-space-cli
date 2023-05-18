@@ -4,8 +4,6 @@ const { writeFileSync, existsSync, rmSync } = require('fs')
 const { join } = require('path')
 const { spawn } = require('child_process')
 
-const isWindows = process.platform === 'win32'
-
 /**
  * download file
  * @param {string} url
@@ -15,10 +13,9 @@ function request(url) {
 
   return new Promise((resolve, reject) => {
     const req = protocol.get(url, (res) => {
-      if (res.statusCode !== 200) {
-        reject(new Error(`Failed to download file: ${res.statusMessage}`))
-        return
-      }
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) return resolve(request(res.headers.location))
+      if (res.statusCode !== 200) return reject(new Error(`Failed to download file statusCode(${res.statusCode}): ${res.statusMessage}`))
+
       const data = []
       res.on('data', (chunk) => {
         data.push(chunk)
@@ -81,9 +78,13 @@ function remove(path) {
   existsSync(path) && rmSync(path)
 }
 
+const isWindows = process.platform === 'win32'
+const isLinux = process.platform === 'linux'
+const isDarwin = process.platform === 'darwin'
+const arch = process.arch === 'x64' ? 'x86_64' : process.arch
 const spaceBasePath = join(process.env.HOME || process.env.USERPROFILE, '.detaspace')
 const spaceBinaryDirPath = join(spaceBasePath, 'bin')
 const spacePath = join(spaceBinaryDirPath, 'space')
 const spaceBinaryPath = spacePath + (isWindows ? '.exe' : '')
 
-module.exports = { isWindows, request, download, unzip, installFailed, remove, spaceBasePath, spaceBinaryDirPath, spacePath, spaceBinaryPath }
+module.exports = { arch, isWindows, isLinux, isDarwin, request, download, unzip, installFailed, remove, spaceBasePath, spaceBinaryDirPath, spacePath, spaceBinaryPath }
